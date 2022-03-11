@@ -16,3 +16,4 @@ Anti Reversing
  
 Scanning Hacking Tool
  - Scanning the suspicious module (virtualization, frida and etc)
+ - Scanning user-defined hacking tools
