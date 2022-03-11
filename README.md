@@ -12,7 +12,7 @@ Integrity
  - Check the inline Hooking.
 
 Anti Reversing
- - System API implementation. (syscall)
+ - syscall direct call Implementation.
  
 Scan Hacking Tool
  - Scan so injection.
