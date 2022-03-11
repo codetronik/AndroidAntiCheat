@@ -14,6 +14,6 @@ Integrity
 Anti Reversing
  - Implementation of the syscall API
  
-Scan Hacking Tool
+Scanning Hacking Tool
  - Scanning so injection.
  - Checking the virtualization environment
