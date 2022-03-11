@@ -1,4 +1,4 @@
-# Android Anti-Cheat Engine
+# Android Anti-Cheat Engine (64bit only)
 
 Author : codetronik & Lyn Heo (https://github.com/lynheo)
 
