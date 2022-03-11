@@ -14,6 +14,6 @@ Integrity
 Anti Reversing
  - Implementation of the syscall API
  
-Scanning Hacking Tool
+Scanning tools via Process
  - Scanning the suspicious module (multi-loader, frida and etc)
- - Scanning user-defined hacking tools
+ - Scanning the so injection
