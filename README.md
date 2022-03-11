@@ -15,5 +15,5 @@ Anti Reversing
  - Implementation of the syscall API
  
 Scanning Hacking Tool
- - Scanning the suspicious module (virtualization, frida and etc)
+ - Scanning the suspicious module (multi-loader, frida and etc)
  - Scanning user-defined hacking tools
