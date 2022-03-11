@@ -8,12 +8,12 @@ Tested on GalaxyTab S6 (AARCH64)
 
 ## Features
 Integrity
- - Check the got section table Hooking.
- - Check the inline Hooking.
+ - Check the got section table Hooking
+ - Check the inline Hooking
 
 Anti Reversing
- - syscall direct call Implementation.
+ - Implementation of the syscall API
  
 Scan Hacking Tool
- - Scan so injection.
- - Checking the virtualization environment.
+ - Scanning so injection.
+ - Checking the virtualization environment
