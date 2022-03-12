@@ -14,5 +14,5 @@ Integrity
 Anti Reversing
  - Implementation of the syscall API
  
-Scanning tools via the process memory
- - Scanning the binary pattern
+Scanning tools 
+ - Scanning the binary pattern via the process memory
