@@ -7,7 +7,7 @@ Tested on GalaxyTab S6 (AARCH64)
 ## Author
 - codetronik (codetronik@gmail.com)
 - Lyn Heo (https://github.com/lynheo)
-- 
+
 ## Features
 Integrity
  - Check the GOT section table Hooking
