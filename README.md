@@ -15,5 +15,4 @@ Anti Reversing
  - Implementation of the syscall API
  
 Scanning tools via the process memory
- - Scanning the suspicious module (multi-loader, frida and etc)
- - Scanning the so injection
+ - Scanning the binary pattern
