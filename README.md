@@ -12,7 +12,7 @@ Tested on GalaxyTab S6 (AARCH64)
 Integrity
  - Check GOT section table Hooking
  - Check inline Hooking (memory address based)
- - Check Code section Modification
+ - Check code/rodata section Modification
 
 Anti Reversing
  - Implementation of syscall API
