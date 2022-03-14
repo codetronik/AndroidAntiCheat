@@ -10,11 +10,12 @@ Tested on GalaxyTab S6 (AARCH64)
 
 ## Features
 Integrity
- - Check the GOT section table Hooking
- - Check the inline Hooking (memory address based)
+ - Check GOT section table Hooking
+ - Check inline Hooking (memory address based)
+ - Check Code section Modification
 
 Anti Reversing
- - Implementation of the syscall API
+ - Implementation of syscall API
  
 Scanning tools 
  - Scanning the binary pattern via the process memory
