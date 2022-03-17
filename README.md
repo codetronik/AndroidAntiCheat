@@ -2,7 +2,7 @@
 
 Built in Visual Studio 2022
 
-It works with general privileges. (no need ROOT)
+It works with general privileges. (No ROOT Required.)
 
 ## Author
 - codetronik (codetronik@gmail.com)
