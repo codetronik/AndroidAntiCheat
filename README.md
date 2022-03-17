@@ -2,6 +2,8 @@
 
 Built in Visual Studio 2022
 
+It works with general privileges. (no need ROOT)
+
 ## Author
 - codetronik (codetronik@gmail.com)
 - Lyn Heo (https://github.com/lynheo)
