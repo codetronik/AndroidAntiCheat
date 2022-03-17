@@ -2,8 +2,6 @@
 
 Built in Visual Studio 2022
 
-Tested on GalaxyTab S6 (AARCH64)
-
 ## Author
 - codetronik (codetronik@gmail.com)
 - Lyn Heo (https://github.com/lynheo)
@@ -19,3 +17,8 @@ Anti Reversing
  
 Scanning tools 
  - Scanning the binary pattern via the process memory
+
+## Test Environment
+AARCH64 (ARM64)
+Galaxy Tab S6 (Android 11)
+Galaxy Note 8 (Anddroid 10)
