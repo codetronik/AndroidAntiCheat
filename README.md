@@ -22,6 +22,9 @@ Anti Reversing
 Scanning tools 
  - Scanning the binary pattern via the process memory
 
+## Output
+- dynamic library (libace.so / libsample.so)
+
 ## Test Environment
 AARCH64 (ARM64)
 - Galaxy Tab S6 (Android 11)
