@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2bc30a89-95ac-4051-97dc-c2f9fee29d8a}</ProjectGuid>
+    <Keyword>Android</Keyword>
+    <RootNamespace>engine</RootNamespace>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <ApplicationType>Android</ApplicationType>
+    <ApplicationTypeRevision>3.0</ApplicationTypeRevision>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+    <AndroidAPILevel>android-28</AndroidAPILevel>
+    <ThumbMode>Disabled</ThumbMode>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+    <AndroidAPILevel>android-28</AndroidAPILevel>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <OutDir>..\..\build\debug\</OutDir>
+    <IntDir>..\..\build\debug\obj\engine\</IntDir>
+    <TargetName>libace</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <OutDir>..\..\build\release\</OutDir>
+    <IntDir>..\..\build\release\obj\engine\</IntDir>
+    <TargetName>libace</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <CppLanguageStandard>c++1z</CppLanguageStandard>
+      <ExceptionHandling>Disabled</ExceptionHandling>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <PostBuildEvent>
+      <Command>adb.exe push $(OutDir)$(TargetName)$(TargetExt) /data/local/tmp</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <CppLanguageStandard>c++1z</CppLanguageStandard>
+    </ClCompile>
+    <PostBuildEvent>
+      <Command>adb.exe push $(OutDir)$(TargetName)$(TargetExt) /data/local/tmp</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="FileModule.cpp" />
+    <ClCompile Include="InlineHooker.cpp" />
+    <ClCompile Include="SectionIntegrity.cpp" />
+    <ClCompile Include="GotIntegrity.cpp" />
+    <ClCompile Include="HookTest.cpp" />
+    <ClCompile Include="InlineStatus.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MemModule.cpp" />
+    <ClCompile Include="MemoryScan.cpp" />
+    <ClCompile Include="Mmap.cpp" />
+    <ClCompile Include="Module.cpp" />
+    <ClCompile Include="MyApi.cpp" />
+    <ClCompile Include="Util.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FileModule.h" />
+    <ClInclude Include="InlineHooker.h" />
+    <ClInclude Include="SectionIntegrity.h" />
+    <ClInclude Include="GotIntegrity.h" />
+    <ClInclude Include="HookTest.h" />
+    <ClInclude Include="InlineStatus.h" />
+    <ClInclude Include="Log.h" />
+    <ClInclude Include="MemModule.h" />
+    <ClInclude Include="MemoryScan.h" />
+    <ClInclude Include="Mmap.h" />
+    <ClInclude Include="Module.h" />
+    <ClInclude Include="MyApi.h" />
+    <ClInclude Include="Util.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>
