@@ -2,7 +2,7 @@
 
 Built in Visual Studio 2022
 
-It works with general privileges. (No ROOT Required.)
+It works with ring 3 privileges. (No ROOT Required.)
 
 ## Author
 - codetronik (codetronik@gmail.com)
