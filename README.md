@@ -1,6 +1,8 @@
-# Android Anti-Cheat Engine (64bit only)
+# Android Anti-Cheat Engine 
 
 Built in Visual Studio 2022
+
+AARCH64 Only
 
 It works with ring 3 privileges. (No ROOT Required.)
 
