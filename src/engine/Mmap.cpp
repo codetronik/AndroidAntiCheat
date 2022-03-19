@@ -41,7 +41,7 @@ bool Mmap::FileOpen()
 	}
 
 	this->fd = fd;
-	// ÆÄÀÏÀÇ »çÀÌÁî¸¦ ¾ò´Â´Ù. 
+	// íŒŒì¼ì˜ ì‚¬ì´ì¦ˆë¥¼ ì–»ëŠ”ë‹¤. 
 	struct stat finfo = { 0, };
 	int ret = myApi.stat(this->path.c_str(), &finfo);
 

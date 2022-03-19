@@ -87,7 +87,7 @@ int MemoryScan::MemorySearch(unsigned char* text, int textSize, unsigned char* p
 
 		int move = 0;
 
-		//text¸¦ WILDCARD·Î ¹Ù²ÛÈÄ ÀÌµ¿ÇÑÈÄ ´Ù½Ã ¿ø·¡ °ªÀ¸·Î ¹Ù²Ş.
+		//textë¥¼ WILDCARDë¡œ ë°”ê¾¼í›„ ì´ë™í•œí›„ ë‹¤ì‹œ ì›ë˜ ê°’ìœ¼ë¡œ ë°”ê¿ˆ.
 		if (GST[pattern_found_count + 1] > pattern_found_count - BCT[text[i + pattern_found_count]])
 		{
 			move = GST[pattern_found_count + 1];
@@ -130,13 +130,13 @@ bool MemoryScan::IsHackFound()
 	vector<unsigned char> region;
 	for (auto& i : memRegions)
 	{
-		// vector»ç¿ë ½Ã ÄÄÆÄÀÏ ¿É¼Ç -O3 ÇÊ¼ö. -O0À¸·Î ÇÏ¸é resize()¿¡¼­ °Ì³ª ´À¸².
+		// vectorì‚¬ìš© ì‹œ ì»´íŒŒì¼ ì˜µì…˜ -O3 í•„ìˆ˜. -O0ìœ¼ë¡œ í•˜ë©´ resize()ì—ì„œ ê²ë‚˜ ëŠë¦¼.
 		region.resize(i.endAddr - i.startAddr);
 		memcpy(region.data(), (void*)i.startAddr, i.endAddr - i.startAddr);
 
 		for (auto& j : hackPattern)
 		{
-			// ¿¹¸¦µé¾î ÄÚµå ¿µ¿ª¿¡¸¸ Á¸ÀçÇÏ´Â ÆĞÅÏÀ» PROT_READ | PROT_WRITE ¼Ó¼ºÀÇ ¸Ş¸ğ¸®¿¡¼­ °Ë»öÇÒ ÇÊ¿ä°¡ ¾øÀ½
+			// ì˜ˆë¥¼ë“¤ì–´ ì½”ë“œ ì˜ì—­ì—ë§Œ ì¡´ì¬í•˜ëŠ” íŒ¨í„´ì„ PROT_READ | PROT_WRITE ì†ì„±ì˜ ë©”ëª¨ë¦¬ì—ì„œ ê²€ìƒ‰í•  í•„ìš”ê°€ ì—†ìŒ
 			if (i.perms & j.existPerms)
 			{
 				int off = MemorySearch(region.data(), i.endAddr - i.startAddr, (unsigned char*)j.hexbytes.data(), j.hexbytes.size());
@@ -164,14 +164,14 @@ void MemoryScan::GetProcessMemoryRegions()
 		return;
 	}
 
-	string buffer = read_string(fd); // ÆÄÀÏ ¹öÆÛ
+	string buffer = read_string(fd); // íŒŒì¼ ë²„í¼
 	close(fd);
 
 	string oneLine = "";
 	stringstream ss(buffer);
 
 
-	// \n À¸·Î ÅäÅ« ±¸ºĞ
+	// \n ìœ¼ë¡œ í† í° êµ¬ë¶„
 	while (getline(ss, oneLine, '\n'))
 	{
 		intptr_t startAddr;
@@ -203,21 +203,21 @@ void MemoryScan::GetProcessMemoryRegions()
 		{
 			nperms = nperms + PROT_EXEC;
 		}
-		//sleep(0.2); // ÇÑ ¹ø¿¡ ´ë·®ÀÇ LOG¸¦ Ãâ·ÂÇÏ¸é Áß°£¿¡ ·Î±×°¡ Â©¸². sleepÀ» ÁÖ¾î¾ß ÇÔ 
+		//sleep(0.2); // í•œ ë²ˆì— ëŒ€ëŸ‰ì˜ LOGë¥¼ ì¶œë ¥í•˜ë©´ ì¤‘ê°„ì— ë¡œê·¸ê°€ ì§¤ë¦¼. sleepì„ ì£¼ì–´ì•¼ í•¨ 
 
-		// ÀĞ±â ±ÇÇÑ ¾øÀ¸¸é °Å¸§
+		// ì½ê¸° ê¶Œí•œ ì—†ìœ¼ë©´ ê±°ë¦„
 		if (!(nperms & PROT_READ))
 		{
 			//LOG("pass %s", oneLine.c_str());			
 			continue;
 		}
 
-		if (path[0] == '[') // [anon:.bss] °°Àº°Å °Å¸§
+		if (path[0] == '[') // [anon:.bss] ê°™ì€ê±° ê±°ë¦„
 		{
 			//LOG("pass %s", oneLine.c_str());			
 			continue;
 		}
-		else if (strstr(path, ":")) // /dev/__properties__/u:object_r:debug_prop:s0 °°Àº°Å °Å¸§
+		else if (strstr(path, ":")) // /dev/__properties__/u:object_r:debug_prop:s0 ê°™ì€ê±° ê±°ë¦„
 		{
 			//LOG("pass %s", oneLine.c_str());				
 			continue;
