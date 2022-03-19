@@ -17,7 +17,7 @@ bool InlineStatus::IsHooked()
 	// test is here : https://armconverter.com/?disasm
 
 	if (*((unsigned char*)(addr + 3)) >= 0x14 
-		&& *((unsigned char*)(addr + 3)) <= 0x17) // B ¸í·É¾î »ç¿ë
+		&& *((unsigned char*)(addr + 3)) <= 0x17) // B ëª…ë ¹ì–´ ì‚¬ìš©
 	{
 		return true;
 	}
