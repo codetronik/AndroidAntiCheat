@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <sys/syscall.h>
 #include <unistd.h>
 

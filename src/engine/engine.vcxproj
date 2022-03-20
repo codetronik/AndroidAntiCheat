@@ -70,10 +70,14 @@
     <PostBuildEvent>
       <Command>adb.exe push $(OutDir)$(TargetName)$(TargetExt) /data/local/tmp</Command>
     </PostBuildEvent>
+    <Link>
+      <DebuggerSymbolInformation>OmitAllSymbolInformation</DebuggerSymbolInformation>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FileModule.cpp" />
     <ClCompile Include="InlineHooker.cpp" />
+    <ClCompile Include="Log.cpp" />
     <ClCompile Include="SectionIntegrity.cpp" />
     <ClCompile Include="GotIntegrity.cpp" />
     <ClCompile Include="HookTest.cpp" />

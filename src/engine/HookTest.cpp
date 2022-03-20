@@ -1,121 +1,121 @@
-#include "HookTest.h"
+ï»¿#include "HookTest.h"
 #include "InlineHooker.h"
 int (*Org_open)(const char* __path, int __flags);
 int hook_open(const char* __path, int __flags)
 {
-    LOG("inlinehook_open %s", __path);
-    if (strstr(__path, "/su") || strstr(__path, "magisk"))
-    {       
-        return -1;
-    }
-    return Org_open(__path, __flags);
+	LOG("inlinehook_open %s", __path);
+	if (strstr(__path, "/su") || strstr(__path, "magisk"))
+	{       
+		return -1;
+	}
+	return Org_open(__path, __flags);
 }
 
 FILE*(*Org_fopen)(const char* path, const char* mode);
 FILE* hook_fopen(const char* path, const char* mode)
 {
-    if (strstr(path, "/su") || strstr(path, "magisk"))
-    {
-        LOG("fopen path - %s", path);
-        return 0;
-    }
+	if (strstr(path, "/su") || strstr(path, "magisk"))
+	{
+		LOG("fopen path - %s", path);
+		return 0;
+	}
 
-    return Org_fopen(path, mode);
+	return Org_fopen(path, mode);
 }
 int (*Org_access)(const char* __path, int __mode);
 int hook_access(const char* __path, int __mode)
 {
-    if (strstr(__path, "/su") || strstr(__path, "magisk"))
-    {
-        LOG("access path - %s", __path);
-        return -1;
-    }
-    return Org_access(__path, __mode);
+	if (strstr(__path, "/su") || strstr(__path, "magisk"))
+	{
+		LOG("access path - %s", __path);
+		return -1;
+	}
+	return Org_access(__path, __mode);
 }
 int (*Org_stat)(const char* __path, struct stat* __buf);
 int hook_stat(const char* __path, struct stat* __buf)
 {
-    LOG("hook_stat %s", __path);
-    if (strstr(__path, "/su") || strstr(__path, "magisk"))
-    {      
-        return 0;
-    }
-    return Org_stat(__path, __buf);
+	LOG("hook_stat %s", __path);
+	if (strstr(__path, "/su") || strstr(__path, "magisk"))
+	{      
+		return 0;
+	}
+	return Org_stat(__path, __buf);
 }
 
 
 void InlineHookTest()
 {
-    A64HookFunction((void*)fopen, (void*)hook_fopen, (void**)&Org_fopen);
-    A64HookFunction((void*)open, (void*)hook_open, (void**)&Org_open);
-    A64HookFunction((void*)stat, (void*)hook_stat, (void**)&Org_stat);
-    A64HookFunction((void*)access, (void*)hook_access, (void**)&Org_access);
+	A64HookFunction((void*)fopen, (void*)hook_fopen, (void**)&Org_fopen);
+	A64HookFunction((void*)open, (void*)hook_open, (void**)&Org_open);
+	A64HookFunction((void*)stat, (void*)hook_stat, (void**)&Org_stat);
+	A64HookFunction((void*)access, (void*)hook_access, (void**)&Org_access);
 }
 
 void GotPltHookTest()
 {
-    LOG("GotPltHookTest()");
-  
-    MemModule mod("/data/local/tmp/libsample.so");
+	LOG("GotPltHookTest()");
 
-    if (!mod.Init())
-    {
-        return;
-    }
+	MemModule mod("/data/local/tmp/libsample.so");
 
-    vector<GotEntry> gotPltEntries = mod.GetGotPltEntries();
+	if (!mod.Init())
+	{
+		return;
+	}
 
-    for (auto& i : gotPltEntries)
-    {
-        intptr_t* abc = (intptr_t*)i.gotAddr;
-        
-        //hook test
-        if (strcmp(i.funcName, "fopen") == 0)
-        {                               
-            make_rw(abc, 8); // got¼½¼Ç¿¡ "x"±ÇÇÑÀ» ÁÖ¸é crash ¹ß»ýÇÔ           
-            *abc = (intptr_t)hook_fopen;
+	vector<GotEntry> gotPltEntries = mod.GetGotPltEntries();
+
+	for (auto& i : gotPltEntries)
+	{
+		intptr_t* abc = (intptr_t*)i.gotAddr;
+		
+		//hook test
+		if (strcmp(i.funcName, "fopen") == 0)
+		{                               
+			make_rw(abc, 8); // gotì„¹ì…˜ì— "x"ê¶Œí•œì„ ì£¼ë©´ crash ë°œìƒí•¨           
+			*abc = (intptr_t)hook_fopen;
    
-        }        
-        if (strcmp(i.funcName, "open") == 0)
-        {            
-            make_rw(abc, 8);
-            *abc = (intptr_t)hook_open;
-        }        
-        if (strcmp(i.funcName, "stat") == 0)
-        {            
-            make_rw(abc, 8);
-            *abc = (intptr_t)hook_stat;
-        }        
-        if (strcmp(i.funcName, "access") == 0)
-        {
-            make_rw(abc, 8);
-            *abc = (intptr_t)hook_access;
-        }
-    }
+		}        
+		if (strcmp(i.funcName, "open") == 0)
+		{            
+			make_rw(abc, 8);
+			*abc = (intptr_t)hook_open;
+		}        
+		if (strcmp(i.funcName, "stat") == 0)
+		{            
+			make_rw(abc, 8);
+			*abc = (intptr_t)hook_stat;
+		}        
+		if (strcmp(i.funcName, "access") == 0)
+		{
+			make_rw(abc, 8);
+			*abc = (intptr_t)hook_access;
+		}
+	}
 
-    //got hookÀ» ÇÏ¿©µµ fopenÀÇ ÁÖ¼Ò´Â º¯È­ÇÏÁö ¾ÊÀ½
-    //LOG("fopen %llx %llx", fopen, &fopen);
+	//got hookì„ í•˜ì—¬ë„ fopenì˜ ì£¼ì†ŒëŠ” ë³€í™”í•˜ì§€ ì•ŠìŒ
+	//LOG("fopen %llx %llx", fopen, &fopen);
 
 
 }
 
 void DataModifyTest()
 {
-    MemModule mod("/data/local/tmp/libsample.so");
+	MemModule mod("/data/local/tmp/libsample.so");
 
-    if (!mod.Init())
-    {
-        return;
-    }
+	if (!mod.Init())
+	{
+		return;
+	}
 
-    char* start = (char*)mod.GetModuleAddr()->startAddr;
-    make_rwx(start, 4096);
-    for (int i = 0; i < 4096; i++)
-    {
-        if (0 == strcmp(start + i, "/bin/su"))
-        {
-            LOG("found");
-            strcpy((char*)start + i, "/bin/s1");
-        }
-    }
+	char* start = (char*)mod.GetModuleAddr()->startAddr;
+	make_rwx(start, 4096);
+	for (int i = 0; i < 4096; i++)
+	{
+		if (0 == strcmp(start + i, "/bin/su"))
+		{
+			LOG("found");
+			strcpy((char*)start + i, "/bin/s1");
+		}
+	}
 }

@@ -1,16 +1,16 @@
-#pragma once
+﻿#pragma once
 #include "Module.h"
 
 
 class MemModule : public Module
 {
 public:
-    MemModule(string path);
-    virtual ~MemModule();
-    bool Init() override;
+	MemModule(string path);
+	virtual ~MemModule();
+	bool Init() override;
 private:
-    void GetBaseAddress();
+	void GetBaseAddress();
 protected:
-    bool GetSectionAddr() override;
+	bool GetSectionAddr() override;
 };
 

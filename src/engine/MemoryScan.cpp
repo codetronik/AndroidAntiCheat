@@ -1,4 +1,4 @@
-#include "MemoryScan.h"
+﻿#include "MemoryScan.h"
 
 MemoryScan::MemoryScan(intptr_t thisModAddr)
 {
@@ -203,7 +203,7 @@ void MemoryScan::GetProcessMemoryRegions()
 		{
 			nperms = nperms + PROT_EXEC;
 		}
-		//sleep(0.2); // 한 번에 대량의 LOG를 출력하면 중간에 로그가 짤림. sleep을 주어야 함 
+	
 
 		// 읽기 권한 없으면 거름
 		if (!(nperms & PROT_READ))

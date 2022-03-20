@@ -1,11 +1,11 @@
-#include "Module.h"
+ï»¿#include "Module.h"
 
 
 Module::Module(string path)
 {
 	this->initDone = false;
 	this->path = path;	
-	// ±¸Á¶Ã¼¸¦ memsetÀ¸·Î ÃÊ±âÈ­ ±İÁö -> ±¸Á¶Ã¼ ³»¿¡ string°°Àº°Å ¼±¾ğÇÏ´Â ¼ø°£ ÅÍÁú ¼ö ÀÖÀ½
+	// êµ¬ì¡°ì²´ë¥¼ memsetìœ¼ë¡œ ì´ˆê¸°í™” ê¸ˆì§€ -> êµ¬ì¡°ì²´ ë‚´ì— stringê°™ì€ê±° ì„ ì–¸í•˜ëŠ” ìˆœê°„ í„°ì§ˆ ìˆ˜ ìˆìŒ
 	this->moduleAddr.codeSectionEndAddr = 0;
 	this->moduleAddr.codeSectionStartAddr = 0;
 	this->moduleAddr.dynstrSectionEndAddr = 0;
@@ -30,20 +30,20 @@ Module::~Module()
 }
 
 
-// ¸®ÅÏ °ªÀÌ ÀÖ°Å³ª ¾ø°Å³ª
+// ë¦¬í„´ ê°’ì´ ìˆê±°ë‚˜ ì—†ê±°ë‚˜
 optional<ModuleAddr> Module::GetModuleAddr()
 {
 	LOG("Module::GetModuleAddr()");
 	if (initDone == false)
 	{
-		LOG("failed");
+		LOGE("failed");
 		return nullopt;
 	}
 	return moduleAddr;
 }
 vector<GotEntry> Module::GetGotEntries()
 {
-	// .got ¼½¼Ç
+	// .got ì„¹ì…˜
 
 	LOG("Module::GetGotEntries()");
 	GetDynSymEntries();
@@ -61,7 +61,7 @@ vector<GotEntry> Module::GetGotEntries()
 	{
 		intptr_t value = entry[i];
 
-		// .rela.plt¿¡ °ªÀÌ ÀÖ´ÂÁö Ã£¾Æº»´Ù.
+		// .rela.pltì— ê°’ì´ ìˆëŠ”ì§€ ì°¾ì•„ë³¸ë‹¤.
 		auto posPlt = find_if(relapltEntries.begin(), relapltEntries.end(), [&value](const Entry& x) { return x.funcAddr == value; });
 		if (posPlt != relapltEntries.end())
 		{
@@ -69,7 +69,7 @@ vector<GotEntry> Module::GetGotEntries()
 			gotEntries.push_back({ posPlt->funcName, (intptr_t)&entry[i], entry[i], false });
 		}
 
-		// .rela.dyn¿¡ °ªÀÌ ÀÖ´ÂÁö Ã£¾Æº»´Ù.
+		// .rela.dynì— ê°’ì´ ìˆëŠ”ì§€ ì°¾ì•„ë³¸ë‹¤.
 		auto posDyn = find_if(reladynEntries.begin(), reladynEntries.end(), [&value](const Entry& x) { return x.funcAddr == value; });
 		if (posDyn != reladynEntries.end())
 		{
@@ -94,14 +94,14 @@ vector<GotEntry> Module::GetGotPltEntries()
 	{
 		return GetGotEntries();
 	}
-	// .got.plt ¼½¼Ç
+	// .got.plt ì„¹ì…˜
 	LOG("Module::GetGotPltEntries()");
 	GetRelaPltEntries();
 
 	vector<GotEntry> gotPltEntries;
 
-	// .got.plt & .got µÑ´Ù ÀÖÀ¸¸é .got.plt¸¸ ÂüÁ¶
-	// .gotÇÏ³ª¸¸ ÀÖ´Â °æ¿ì´Â .got¿¡¼­ plt µµ Æ÷ÇÔµÊ
+	// .got.plt & .got ë‘˜ë‹¤ ìˆìœ¼ë©´ .got.pltë§Œ ì°¸ì¡°
+	// .gotí•˜ë‚˜ë§Œ ìˆëŠ” ê²½ìš°ëŠ” .gotì—ì„œ plt ë„ í¬í•¨ë¨
 	intptr_t* entry = nullptr;
 	int entryCnt = 0;
 
@@ -113,7 +113,7 @@ vector<GotEntry> Module::GetGotPltEntries()
 	{
 		intptr_t value = entry[i];
 
-		// .rela.plt¿¡ °ªÀÌ ÀÖ´ÂÁö Ã£¾Æº»´Ù.
+		// .rela.pltì— ê°’ì´ ìˆëŠ”ì§€ ì°¾ì•„ë³¸ë‹¤.
 		auto pos = find_if(relapltEntries.begin(), relapltEntries.end(), [&value](const Entry& x) { return x.funcAddr == value; });
 		if (pos != relapltEntries.end())
 		{		
@@ -134,11 +134,11 @@ vector<GotEntry> Module::GetGotPltEntries()
 void Module::GetRelaPltEntries()
 {
 	LOG("Module::GetRelaPltEntries()");
-	// .rela.plt °ªµéÀº ÀüºÎ .got¸¦ °¡¸®Å²´Ù.
+	// .rela.plt ê°’ë“¤ì€ ì „ë¶€ .gotë¥¼ ê°€ë¦¬í‚¨ë‹¤.
 
 	int relapltEntryCnt = (moduleAddr.relapltSectionEndAddr - moduleAddr.relapltSectionStartAddr) / sizeof(Elf64_Rela);
 
-	// ¿£Æ®¸® 1°³¸¦ °¡¸®Å´
+	// ì—”íŠ¸ë¦¬ 1ê°œë¥¼ ê°€ë¦¬í‚´
 	Elf64_Rela* relapltEntry = (Elf64_Rela*)moduleAddr.relapltSectionStartAddr;
 
 	for (int i = 0; i < relapltEntryCnt; i++)
@@ -147,18 +147,18 @@ void Module::GetRelaPltEntries()
 		intptr_t gotValue = *(intptr_t*)gotAddress;
 		
 		
-		// ÀÌ ¼½¼ÇÀÇ entryµéÀÇ typeÀº ÀüºÎ R_AARCH64_JUMP_SLOT (1026) ÀÌ´Ù.
+		// ì´ ì„¹ì…˜ì˜ entryë“¤ì˜ typeì€ ì „ë¶€ R_AARCH64_JUMP_SLOT (1026) ì´ë‹¤.
 		//LOG("type %d", ELF64_R_TYPE(relapltEntry[i].r_info));
 		
-		// ½Éº¼(ÇÔ¼öÀÌ¸§) ±¸ÇÏ±â		
+		// ì‹¬ë³¼(í•¨ìˆ˜ì´ë¦„) êµ¬í•˜ê¸°		
 		char* funcName = nullptr;
 		
-		// ¿£Æ®¸®¿¡ ½Éº¼ Á¤º¸°¡ ÀÖ´Ù¸é
+		// ì—”íŠ¸ë¦¬ì— ì‹¬ë³¼ ì •ë³´ê°€ ìˆë‹¤ë©´
 		if (ELF64_R_SYM(relapltEntry[i].r_info) != 0)
 		{
 			Elf64_Sym* dynsymEntry = (Elf64_Sym*)moduleAddr.dynsymSectionStartAddr;
-			dynsymEntry += ELF64_R_SYM(relapltEntry[i].r_info); // .dynsym ½ÃÀÛ ÁÖ¼Ò¿¡ symbol offset¸¸Å­ ´õÇØ¼­ ÇØ´ç entry¸¦ °¡¸®Å°°Ô ÇÔ
-			funcName = (char*)moduleAddr.dynstrSectionStartAddr + dynsymEntry->st_name; // .dynstr ½ÃÀÛ ÁÖ¼Ò¿¡ offsetÀ» ´õÇÔ	
+			dynsymEntry += ELF64_R_SYM(relapltEntry[i].r_info); // .dynsym ì‹œì‘ ì£¼ì†Œì— symbol offsetë§Œí¼ ë”í•´ì„œ í•´ë‹¹ entryë¥¼ ê°€ë¦¬í‚¤ê²Œ í•¨
+			funcName = (char*)moduleAddr.dynstrSectionStartAddr + dynsymEntry->st_name; // .dynstr ì‹œì‘ ì£¼ì†Œì— offsetì„ ë”í•¨	
 			//LOG("%s %llx", funcName, gotValue);
 			relapltEntries.push_back({ funcName, gotValue });
 		}
@@ -171,8 +171,8 @@ void Module::GetRelaPltEntries()
 
 void Module::GetDynSymEntries()
 {
-	// .dynsym Àº .gotÀ» Æ÷ÇÔÇÏ¿© ÇØ´ç ¸ğµâ¿¡¼­ »ç¿ëÇÏ´Â ¸ğµç ÇÔ¼ö¸íÀ» ´ã°í ÀÖ´Ù.
-	// fopen, memcpy°°Àº ÇÔ¼öµéÀº ¿ÀÇÁ¼Â °ªÀÌ 0ÀÌ¹Ç·Î .got ¿¡¼­ È°¿ëÇÒ ¼ö ¾ø´Ù. 
+	// .dynsym ì€ .gotì„ í¬í•¨í•˜ì—¬ í•´ë‹¹ ëª¨ë“ˆì—ì„œ ì‚¬ìš©í•˜ëŠ” ëª¨ë“  í•¨ìˆ˜ëª…ì„ ë‹´ê³  ìˆë‹¤.
+	// fopen, memcpyê°™ì€ í•¨ìˆ˜ë“¤ì€ ì˜¤í”„ì…‹ ê°’ì´ 0ì´ë¯€ë¡œ .got ì—ì„œ í™œìš©í•  ìˆ˜ ì—†ë‹¤. 
 
 	Elf64_Sym* dynsymEntry = (Elf64_Sym*)moduleAddr.dynsymSectionStartAddr;
 	int dynsymEntryCnt = (moduleAddr.dynsymSectionEndAddr - moduleAddr.dynsymSectionStartAddr) / sizeof(Elf64_Sym);
@@ -192,11 +192,11 @@ void Module::GetRelaDynEntries()
 {
 	LOG("Module::GetRelaDynEntries()");
 
-	// .rela.dyn °ªµé Áß ÀÏºÎ´Â .got¸¦ °¡¸®Å°¸ç, symbol Á¤º¸°¡ ¾ø´Â °ÍÀÌ ´ë´Ù¼öÀÌ¹Ç·Î, .dynsym¿¡¼­ ¿ÀÇÁ¼ÂÀ» ºñ±³ÇÏ¿© ÀÏÄ¡ÇÏ¸é ÇÔ¼ö¸íÀ» Ã¤¿ö³Ö¾î¾ß ÇÑ´Ù.
+	// .rela.dyn ê°’ë“¤ ì¤‘ ì¼ë¶€ëŠ” .gotë¥¼ ê°€ë¦¬í‚¤ë©°, symbol ì •ë³´ê°€ ì—†ëŠ” ê²ƒì´ ëŒ€ë‹¤ìˆ˜ì´ë¯€ë¡œ, .dynsymì—ì„œ ì˜¤í”„ì…‹ì„ ë¹„êµí•˜ì—¬ ì¼ì¹˜í•˜ë©´ í•¨ìˆ˜ëª…ì„ ì±„ì›Œë„£ì–´ì•¼ í•œë‹¤.
 
 	int reladynEntryCnt = (moduleAddr.reladynSectionEndAddr - moduleAddr.reladynSectionStartAddr) / sizeof(Elf64_Rela);
 
-	// ¿£Æ®¸® 1°³¸¦ °¡¸®Å´
+	// ì—”íŠ¸ë¦¬ 1ê°œë¥¼ ê°€ë¦¬í‚´
 	Elf64_Rela* reladynEntry = (Elf64_Rela*)moduleAddr.reladynSectionStartAddr;
 
 	for (int i = 0; i < reladynEntryCnt; i++)
@@ -204,18 +204,18 @@ void Module::GetRelaDynEntries()
 		intptr_t address = moduleAddr.startAddr + reladynEntry[i].r_offset;
 		intptr_t value = *(intptr_t*)address;
 
-		// ½Éº¼(ÇÔ¼öÀÌ¸§) ±¸ÇÏ±â
+		// ì‹¬ë³¼(í•¨ìˆ˜ì´ë¦„) êµ¬í•˜ê¸°
 		char* funcName = nullptr;
 
-		// ¿£Æ®¸®¿¡ ½Éº¼ Á¤º¸°¡ ÀÖ´Ù¸é
+		// ì—”íŠ¸ë¦¬ì— ì‹¬ë³¼ ì •ë³´ê°€ ìˆë‹¤ë©´
 		if (ELF64_R_SYM(reladynEntry[i].r_info) != 0)
 		{
 			Elf64_Sym* dynsymEntry = (Elf64_Sym*)moduleAddr.dynsymSectionStartAddr;
-			dynsymEntry += ELF64_R_SYM(reladynEntry[i].r_info); // .dynsym ½ÃÀÛ ÁÖ¼Ò¿¡ symbol offset¸¸Å­ ´õÇØ¼­ ÇØ´ç entry¸¦ °¡¸®Å°°Ô ÇÔ
-			funcName = (char*)moduleAddr.dynstrSectionStartAddr + dynsymEntry->st_name; // .dynstr ½ÃÀÛ ÁÖ¼Ò¿¡ offsetÀ» ´õÇÔ
+			dynsymEntry += ELF64_R_SYM(reladynEntry[i].r_info); // .dynsym ì‹œì‘ ì£¼ì†Œì— symbol offsetë§Œí¼ ë”í•´ì„œ í•´ë‹¹ entryë¥¼ ê°€ë¦¬í‚¤ê²Œ í•¨
+			funcName = (char*)moduleAddr.dynstrSectionStartAddr + dynsymEntry->st_name; // .dynstr ì‹œì‘ ì£¼ì†Œì— offsetì„ ë”í•¨
 			//LOG("yes symbol %s", funcName);
 		}
-		else // ½Éº¼ Á¤º¸°¡ ¾ø´Ù¸é .dynsymÀÇ ¿£Æ®¸®¿Í ÁÖ¼Ò°¡ ÀÏÄ¡ÇÏ¸é º¹»çÇØ¿Â´Ù.
+		else // ì‹¬ë³¼ ì •ë³´ê°€ ì—†ë‹¤ë©´ .dynsymì˜ ì—”íŠ¸ë¦¬ì™€ ì£¼ì†Œê°€ ì¼ì¹˜í•˜ë©´ ë³µì‚¬í•´ì˜¨ë‹¤.
 		{
 			auto pos = find_if(dynsymEntries.begin(), dynsymEntries.end(), [&value](const Entry& x) { return x.funcAddr == value; });
 			if (pos != dynsymEntries.end())
@@ -224,7 +224,7 @@ void Module::GetRelaDynEntries()
 				//LOG("[dynsym] yes symbol %s", funcName);
 
 			}
-			else // ¾ø´Ù¸é Àü¿ª º¯¼öÀÌ´Ù. (ÀÌ °æ¿ì .data.rel.ro / .data µîÀÇ ¼½¼ÇÀÇ ¿£Æ®¸®¸¦ °¡¸®Å´)
+			else // ì—†ë‹¤ë©´ ì „ì—­ ë³€ìˆ˜ì´ë‹¤. (ì´ ê²½ìš° .data.rel.ro / .data ë“±ì˜ ì„¹ì…˜ì˜ ì—”íŠ¸ë¦¬ë¥¼ ê°€ë¦¬í‚´)
 			{
 				funcName = (char*)"global";
 				//LOG("no.. %s", funcName);

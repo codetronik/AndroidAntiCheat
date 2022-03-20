@@ -1,4 +1,4 @@
-#include "MemModule.h"
+ï»¿#include "MemModule.h"
 #include <sstream>
 #include <cstring>
 MemModule::MemModule(string path) : Module(path)
@@ -15,7 +15,7 @@ bool MemModule::Init()
 	if (initDone == false)
 	{
 		GetBaseAddress();		
-		// ¸Þ¸ð¸®¿¡ ÇØ´ç ¸ðµâÀÌ ¾øÀ½
+		// ë©”ëª¨ë¦¬ì— í•´ë‹¹ ëª¨ë“ˆì´ ì—†ìŒ
 		if (this->moduleAddr.startAddr == 0)
 		{
 			LOGE("MemModule::Init() 1");
@@ -46,13 +46,13 @@ void MemModule::GetBaseAddress()
 	stringstream ss(buffer);
 	LOG("%s", this->path.c_str());
 	
-	// \n À¸·Î ÅäÅ« ±¸ºÐ
+	// \n ìœ¼ë¡œ í† í° êµ¬ë¶„
 	while (getline(ss, oneLine, '\n'))
 	{			
 		size_t n = oneLine.find(this->path);
 		if (n != string::npos)
 		{
-			// ¹ß°ß
+			// ë°œê²¬
 	
 			sscanf(oneLine.c_str(), "%lx-", &this->moduleAddr.startAddr);
 			break;
@@ -66,7 +66,7 @@ bool MemModule::GetSectionAddr()
 {
 	LOG("MemModule::GetSectionAddr()");
 
-	// elf ÆÄ½ÌÀ» À§ÇØ ¸Þ¸ð¸®¿¡ ¸ÅÇÎ
+	// elf íŒŒì‹±ì„ ìœ„í•´ ë©”ëª¨ë¦¬ì— ë§¤í•‘
 	Mmap m(this->path);
 	
 	char* memory = (char*)m.Alloc();
@@ -95,47 +95,53 @@ bool MemModule::GetSectionAddr()
 	{
 	
 		shdr = (Elf64_Shdr*)&memory[ehdr->e_shoff + x];
+		LOG("type %d flags %d info %d", shdr->sh_type, shdr->sh_flags, shdr->sh_info);
 		char* p = &memory[sh_offset + shdr->sh_name];
 
 		if (0 == strcmp(p, ".got.plt"))
 		{
 			moduleAddr.gotPltSectionStartAddr = moduleAddr.startAddr + shdr->sh_addr;
-			moduleAddr.gotPltSectionEndAddr = moduleAddr.startAddr + shdr->sh_addr + shdr->sh_size;
+			moduleAddr.gotPltSectionEndAddr = moduleAddr.gotPltSectionStartAddr + shdr->sh_size;
 		}
 		if (0 == strcmp(p, ".got"))
 		{
 			moduleAddr.gotSectionStartAddr = moduleAddr.startAddr + shdr->sh_addr;
-			moduleAddr.gotSectionEndAddr = moduleAddr.startAddr + shdr->sh_addr + shdr->sh_size;
+			moduleAddr.gotSectionEndAddr = moduleAddr.gotSectionStartAddr + shdr->sh_size;
 		}
 		if (0 == strcmp(p, ".text"))
 		{
 			moduleAddr.codeSectionStartAddr = moduleAddr.startAddr + shdr->sh_addr;
-			moduleAddr.codeSectionEndAddr = moduleAddr.startAddr + shdr->sh_addr + shdr->sh_size;
+			moduleAddr.codeSectionEndAddr = moduleAddr.codeSectionStartAddr + shdr->sh_size;
 		}
 		if (0 == strcmp(p, ".dynsym"))
 		{
 			moduleAddr.dynsymSectionStartAddr = moduleAddr.startAddr + shdr->sh_addr;
-			moduleAddr.dynsymSectionEndAddr = moduleAddr.startAddr + shdr->sh_addr + shdr->sh_size;
+			moduleAddr.dynsymSectionEndAddr = moduleAddr.dynsymSectionStartAddr + shdr->sh_size;
 		}
 		if (0 == strcmp(p, ".dynstr"))
 		{
 			moduleAddr.dynstrSectionStartAddr = moduleAddr.startAddr + shdr->sh_addr;
-			moduleAddr.dynstrSectionEndAddr = moduleAddr.startAddr + shdr->sh_addr + shdr->sh_size;
+			moduleAddr.dynstrSectionEndAddr = moduleAddr.dynstrSectionStartAddr + shdr->sh_size;
 		}
 		if (0 == strcmp(p, ".rela.dyn"))
 		{
 			moduleAddr.reladynSectionStartAddr = moduleAddr.startAddr + shdr->sh_addr;
-			moduleAddr.reladynSectionEndAddr = moduleAddr.startAddr + shdr->sh_addr + shdr->sh_size;
+			moduleAddr.reladynSectionEndAddr = moduleAddr.reladynSectionStartAddr + shdr->sh_size;
 		}
 		if (0 == strcmp(p, ".rela.plt"))
 		{
 			moduleAddr.relapltSectionStartAddr = moduleAddr.startAddr + shdr->sh_addr;
-			moduleAddr.relapltSectionEndAddr = moduleAddr.startAddr + shdr->sh_addr + shdr->sh_size;
+			moduleAddr.relapltSectionEndAddr = moduleAddr.relapltSectionStartAddr + shdr->sh_size;
 		}
 		if (0 == strcmp(p, ".rodata"))
 		{
 			moduleAddr.rodataSectionStartAddr = moduleAddr.startAddr + shdr->sh_addr;
-			moduleAddr.rodataSectionEndAddr = moduleAddr.startAddr + shdr->sh_addr + shdr->sh_size;
+			moduleAddr.rodataSectionEndAddr = moduleAddr.rodataSectionStartAddr + shdr->sh_size;
+		}
+		if (0 == strcmp(p, ".plt"))
+		{
+			moduleAddr.pltSectionStartAddr = moduleAddr.startAddr + shdr->sh_addr;
+			moduleAddr.pltSectionEndAddr = moduleAddr.pltSectionStartAddr + shdr->sh_size;
 		}
 		x += sizeof(Elf64_Shdr);
 	}

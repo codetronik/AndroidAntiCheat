@@ -1,4 +1,4 @@
-#include "InlineStatus.h"
+﻿#include "InlineStatus.h"
 #include "Log.h"
 InlineStatus::InlineStatus(intptr_t addr)
 {		
@@ -26,9 +26,6 @@ bool InlineStatus::IsHooked()
 		return true;
 	}
 	return false;
-
-
-
 }
 
 

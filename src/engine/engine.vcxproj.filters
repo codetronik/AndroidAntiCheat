@@ -40,6 +40,9 @@
     <ClCompile Include="Util.cpp">
       <Filter>cpp</Filter>
     </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Util.h">

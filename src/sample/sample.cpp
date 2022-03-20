@@ -9,44 +9,44 @@
 
 extern "C"
 {
-    void test();
+	void test();
 }
 
 void test()
 {
-    int fd = open("/bin/su", O_RDONLY, 0);
-    if (fd > -1)
-    {
-        LOG("(open) /bin/su exist");
-    }
-    else
-    {
-        LOG("(open) /bin/su not exist");
-    }
-    fd = open("/apex/com.android.runtime/lib64/bionic/libc.so", O_RDONLY, 0);
-    if (fd > -1)
-    {
-        LOG("(open) /apex/com.android.runtime/lib64/bionic/libc.so exist");
-    }
-    else
-    {
-        LOG("(open) /apex/com.android.runtime/lib64/bionic/libc.so not exist");
-    }
+	int fd = open("/bin/su", O_RDONLY, 0);
+	if (fd > -1)
+	{
+		LOG("(open) /bin/su exist");
+	}
+	else
+	{
+		LOG("(open) /bin/su not exist");
+	}
+	fd = open("/apex/com.android.runtime/lib64/bionic/libc.so", O_RDONLY, 0);
+	if (fd > -1)
+	{
+		LOG("(open) /apex/com.android.runtime/lib64/bionic/libc.so exist");
+	}
+	else
+	{
+		LOG("(open) /apex/com.android.runtime/lib64/bionic/libc.so not exist");
+	}
 
-    if (access("/bin/su", F_OK) == 0)
-    {
-        LOG("(access) /bin/su exist");
-    }
-    else
-    {
-        LOG("(access) /bin/su not exist");
-    }    
+	if (access("/bin/su", F_OK) == 0)
+	{
+		LOG("(access) /bin/su exist");
+	}
+	else
+	{
+		LOG("(access) /bin/su not exist");
+	}    
 
-    struct stat finfo = { 0, };
-    stat("/apex/com.android.runtime/lib64/bionic/libc.so", &finfo);
-    LOG("(stat) /apex/com.android.runtime/lib64/bionic/libc.so size %d", finfo.st_size);
-    memset(&finfo, 0, sizeof(finfo));
-    stat("/bin/su", &finfo);
-    LOG("(stat) /bin/su size %d", finfo.st_size);
-    
+	struct stat finfo = { 0, };
+	stat("/apex/com.android.runtime/lib64/bionic/libc.so", &finfo);
+	LOG("(stat) /apex/com.android.runtime/lib64/bionic/libc.so size %d", finfo.st_size);
+	memset(&finfo, 0, sizeof(finfo));
+	stat("/bin/su", &finfo);
+	LOG("(stat) /bin/su size %d", finfo.st_size);
+	
 }

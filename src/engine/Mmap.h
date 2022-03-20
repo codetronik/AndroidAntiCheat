@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <string>
@@ -11,17 +11,17 @@ using namespace std;
 class Mmap
 {
 public:
-    Mmap(string path);
-    virtual ~Mmap();
-    void* Alloc();
+	Mmap(string path);
+	virtual ~Mmap();
+	void* Alloc();
 private:
-    void DoMmap();
-    void DoMunmap();
-    bool FileOpen();
+	void DoMmap();
+	void DoMunmap();
+	bool FileOpen();
 private:
-    bool doAlloc;
-    void* memory;
-    int fd;
-    int size;
-    string path;
+	bool doAlloc;
+	void* memory;
+	int fd;
+	int size;
+	string path;
 };

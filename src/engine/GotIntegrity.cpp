@@ -1,4 +1,4 @@
-#include "GotIntegrity.h"
+ï»¿#include "GotIntegrity.h"
 
 GotIntegrity::GotIntegrity(shared_ptr<MemModule> targetMod)
 {
@@ -9,14 +9,14 @@ bool GotIntegrity::AddCheckFuncion(const char* func, shared_ptr<MemModule> check
 {
 	if (false == checkMod->Init())
 	{
-		LOG("GotIntegrity::AddCheckFuncion() 1");
+		LOGE("GotIntegrity::AddCheckFuncion() 1");
 		return false;
 	}
 	optional<ModuleAddr> checkModAddr = checkMod->GetModuleAddr();
 	
 	if (false == checkModAddr.has_value())
 	{
-		LOG("GotIntegrity::AddCheckFuncion() 2");
+		LOGE("GotIntegrity::AddCheckFuncion() 2");
 		return false;
 	}
 
@@ -35,10 +35,11 @@ bool GotIntegrity::IsHooked()
 	
 	if (false == targetMod->Init())
 	{
-		LOG("GotIntegrity::CheckIntegrity() 1");
+		LOGE("GotIntegrity::CheckIntegrity() 1");
 		return false;
 	}
-	// .got.plt ¼½¼ÇÀÌ ÀÖ´Â °æ¿ì¸¦ ¿ì¼±ÇÑ´Ù.
+
+	// .got.plt ì„¹ì…˜ì´ ìˆëŠ” ê²½ìš°ë¥¼ ìš°ì„ í•œë‹¤.
 	optional<ModuleAddr> moduleAddr = targetMod->GetModuleAddr();
 	
 	if (false == moduleAddr.has_value())
@@ -59,12 +60,12 @@ bool GotIntegrity::IsHooked()
 	for (auto& i : gotPltEntries)
 	{	
 		char* sym = i.funcName;
-		// ÇÔ¼ö ÀÌ¸§À» °Ë»öÇÑ´Ù.
+		// í•¨ìˆ˜ ì´ë¦„ì„ ê²€ìƒ‰í•œë‹¤.
 		auto pos = find_if(checkList.begin(), checkList.end(), [&sym](const CheckFunc& x) { return (0 == strcmp(x.funcName, (const char*)sym)); });
 		if (pos != checkList.end())
 		{
 			
-			// Ã¼Å©¸®½ºÆ®ÀÇ ÇÔ¼ö°¡ Á¤»ó ¹üÀ§ÀÎÁö Á¶»ç
+			// ì²´í¬ë¦¬ìŠ¤íŠ¸ì˜ í•¨ìˆ˜ê°€ ì •ìƒ ë²”ìœ„ì¸ì§€ ì¡°ì‚¬
 			if (pos->modAddr.codeSectionStartAddr <= i.funcAddr && pos->modAddr.codeSectionEndAddr > i.funcAddr)
 			{
 				LOG("%s is okay %lx", sym, i.funcAddr);

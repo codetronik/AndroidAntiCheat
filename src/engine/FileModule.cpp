@@ -1,4 +1,4 @@
-#include "FileModule.h"
+ï»¿#include "FileModule.h"
 
 
 FileModule::FileModule(string path) : Module(path)
@@ -29,17 +29,18 @@ bool FileModule::GetSectionAddr()
 	int fd = m.open(path.c_str(), O_RDONLY, 0);
 	if (fd < 0)
 	{
+		LOGE("GetSectionAddr() 1");
 		return false;
 	}
-	// ÆÄÀÏÀÇ »çÀÌÁî¸¦ ¾ò´Â´Ù. 
+	// íŒŒì¼ì˜ ì‚¬ì´ì¦ˆë¥¼ ì–»ëŠ”ë‹¤. 
 	struct stat finfo = { 0, };
 	m.stat(path.c_str(), &finfo);
 	
-	// elf ÆÄ½ÌÀ» À§ÇØ ¸Þ¸ð¸®¿¡ ¸ÅÇÎ
+	// elf íŒŒì‹±ì„ ìœ„í•´ ë©”ëª¨ë¦¬ì— ë§¤í•‘
 	char* memory = (char*)mmap(0, finfo.st_size, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE, fd, 0);
 	if (MAP_FAILED == memory)
 	{
-		LOGE("mmap error");
+		LOGE("GetSectionAddr() 2");
 		return false;
 	}
 	moduleAddr.startAddr = (intptr_t)memory;
@@ -47,7 +48,7 @@ bool FileModule::GetSectionAddr()
 	Elf64_Ehdr* ehdr = (Elf64_Ehdr*)memory;
 	if (!(ehdr->e_ident[0] == 0x7F && ehdr->e_ident[1] == 0x45 && ehdr->e_ident[2] == 0x4C && ehdr->e_ident[3] == 0x46))
 	{
-		LOGE("no elf");
+		LOGE("GetSectionAddr() 3");
 		return false;
 	}
 	
@@ -111,6 +112,11 @@ bool FileModule::GetSectionAddr()
 		if (0 == strcmp(p, ".data"))
 		{
 
+		}
+		if (0 == strcmp(p, ".plt"))
+		{
+			moduleAddr.pltSectionStartAddr = moduleAddr.startAddr + shdr->sh_offset;
+			moduleAddr.pltSectionEndAddr = moduleAddr.pltSectionStartAddr + shdr->sh_size;
 		}
 		
 	}

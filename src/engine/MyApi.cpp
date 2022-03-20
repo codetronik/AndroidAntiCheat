@@ -1,132 +1,132 @@
-#include "MyApi.h"
+ï»¿#include "MyApi.h"
 
 int MyApi::open(const void* path, int flags, int mode)
 {
-    long x0 = -100;
-    long x1 = (long)path;
-    long x2 = (long)flags;
-    long x3 = mode;
-    long x8 = __NR_openat;
-    long ret = 0;
+	long x0 = -100;
+	long x1 = (long)path;
+	long x2 = (long)flags;
+	long x3 = mode;
+	long x8 = __NR_openat;
+	long ret = 0;
 
-    // ·¹Áö½ºÅÍ º¯¼ö¸¦ ¾È¾²±â À§ÇØ ·¹Áö½ºÅÍ¿¡ º¯¼ö¸¦ ´ëÀÔ
-    __asm volatile ("mov x0, %0": : "r"(x0));
-    __asm volatile ("mov x1, %0": : "r"(x1));
-    __asm volatile ("mov x2, %0": : "r"(x2));
-    __asm volatile ("mov x3, %0": : "r"(x3));
-    __asm volatile ("mov x8, %0": : "r"(x8));
-    __asm volatile ("svc 0");
-    __asm volatile ("mov %0, x0" : "=r"(ret));
+	// ë ˆì§€ìŠ¤í„° ë³€ìˆ˜ë¥¼ ì•ˆì“°ê¸° ìœ„í•´ ë ˆì§€ìŠ¤í„°ì— ë³€ìˆ˜ë¥¼ ëŒ€ì…
+	__asm volatile ("mov x0, %0": : "r"(x0));
+	__asm volatile ("mov x1, %0": : "r"(x1));
+	__asm volatile ("mov x2, %0": : "r"(x2));
+	__asm volatile ("mov x3, %0": : "r"(x3));
+	__asm volatile ("mov x8, %0": : "r"(x8));
+	__asm volatile ("svc 0");
+	__asm volatile ("mov %0, x0" : "=r"(ret));
 
-    return (int)ret;
-    /*
-    // ÇöÀç·Î½á´Â ·¹Áö½ºÅÍ º¯¼ö¸¦ ¾È¾²¸é °á°ú ¹ÙÀÌ³Ê¸®¿¡ LDR¸í·É¾î°¡ Á¦´ë·Î ¾ÈºÙÀ½
-    // ·¹Áö½ºÅÍ º¯¼ö¸¦ ¾²¸é Á¦´ë·Î LDR X0, º¯¼ö  ÀÌ·±½ÄÀ¸·Î ºÙÀ½
-    // ·¹Áö½ºÅÍ º¯¼ö´Â c++¿¡¼­ ÄÄÆÄÀÏÀÌ ¾ÈµÇ¹Ç·Î ¾îÂ¿ ¼ö ¾øÀÌ cÆÄÀÏ·Î ÀÛ¼ºÇÏ¿´À½
+	return (int)ret;
+	/*
+	// í˜„ì¬ë¡œì¨ëŠ” ë ˆì§€ìŠ¤í„° ë³€ìˆ˜ë¥¼ ì•ˆì“°ë©´ ê²°ê³¼ ë°”ì´ë„ˆë¦¬ì— LDRëª…ë ¹ì–´ê°€ ì œëŒ€ë¡œ ì•ˆë¶™ìŒ
+	// ë ˆì§€ìŠ¤í„° ë³€ìˆ˜ë¥¼ ì“°ë©´ ì œëŒ€ë¡œ LDR X0, ë³€ìˆ˜  ì´ëŸ°ì‹ìœ¼ë¡œ ë¶™ìŒ
+	// ë ˆì§€ìŠ¤í„° ë³€ìˆ˜ëŠ” c++ì—ì„œ ì»´íŒŒì¼ì´ ì•ˆë˜ë¯€ë¡œ ì–´ì©” ìˆ˜ ì—†ì´ cíŒŒì¼ë¡œ ì‘ì„±í•˜ì˜€ìŒ
 
-    register long x8 __asm__("x8") = (long)__NR_openat;
-    register long x0 __asm__("x0") = (long) - 100; // AT_FDCWD
-    register long x1 __asm__("x1") = (long)path;
-    register long x2 __asm__("x2") = (long)flags;
-    register long x3 __asm__("x3") = 0;
-    __asm volatile ("svc 0" : "=r"(x0) : "r"(x8), "0"(x0), "r"(x1), "r"(x2), "r"(x3) : "memory", "cc");
+	register long x8 __asm__("x8") = (long)__NR_openat;
+	register long x0 __asm__("x0") = (long) - 100; // AT_FDCWD
+	register long x1 __asm__("x1") = (long)path;
+	register long x2 __asm__("x2") = (long)flags;
+	register long x3 __asm__("x3") = 0;
+	__asm volatile ("svc 0" : "=r"(x0) : "r"(x8), "0"(x0), "r"(x1), "r"(x2), "r"(x3) : "memory", "cc");
 
-    return x0;
-    */
+	return x0;
+	*/
 }
 
 
 int MyApi::stat(const char* path, struct stat* buf)
 {  
-    long x0 = 0xFFFFFF9CLL;
-    long x1 = (long)path;
-    long x2 = (long)buf;
-    long x3 = 0;
-    long x8 = __NR3264_fstatat;
-    long ret = 0;
+	long x0 = 0xFFFFFF9CLL;
+	long x1 = (long)path;
+	long x2 = (long)buf;
+	long x3 = 0;
+	long x8 = __NR3264_fstatat;
+	long ret = 0;
   
-    __asm volatile ("mov x0, %0": : "r"(x0));
-    __asm volatile ("mov x1, %0": : "r"(x1));
-    __asm volatile ("mov x2, %0": : "r"(x2));
-    __asm volatile ("mov x3, %0": : "r"(x3));
-    __asm volatile ("mov x8, %0": : "r"(x8));
-    __asm volatile ("svc 0");
-    __asm volatile ("mov %0, x0" : "=r"(ret));
+	__asm volatile ("mov x0, %0": : "r"(x0));
+	__asm volatile ("mov x1, %0": : "r"(x1));
+	__asm volatile ("mov x2, %0": : "r"(x2));
+	__asm volatile ("mov x3, %0": : "r"(x3));
+	__asm volatile ("mov x8, %0": : "r"(x8));
+	__asm volatile ("svc 0");
+	__asm volatile ("mov %0, x0" : "=r"(ret));
 
-    return (int)ret;    
+	return (int)ret;    
 }
 
 
 ssize_t MyApi::read(int fd, void* buf, size_t count)
 {
-    
-    long x0 = (long)fd;
-    long x1 = (long)buf;
-    long x2 = (long)count;
-    long x8 = __NR_read;
-    long ret = 0;
+	
+	long x0 = (long)fd;
+	long x1 = (long)buf;
+	long x2 = (long)count;
+	long x8 = __NR_read;
+	long ret = 0;
 
-    __asm volatile ("mov x0, %0": : "r"(x0));
-    __asm volatile ("mov x1, %0": : "r"(x1));
-    __asm volatile ("mov x2, %0": : "r"(x2));  
-    __asm volatile ("mov x8, %0": : "r"(x8));
-    __asm volatile ("svc 0");
-    __asm volatile ("mov %0, x0" : "=r"(ret));
+	__asm volatile ("mov x0, %0": : "r"(x0));
+	__asm volatile ("mov x1, %0": : "r"(x1));
+	__asm volatile ("mov x2, %0": : "r"(x2));  
+	__asm volatile ("mov x8, %0": : "r"(x8));
+	__asm volatile ("svc 0");
+	__asm volatile ("mov %0, x0" : "=r"(ret));
 
-    return (ssize_t)ret;
+	return (ssize_t)ret;
 }
 void* MyApi::mmap(void* addr, size_t size, int prot, int flags, int fd, off_t offset)
 {
-    long x0 = (long)addr;
-    long x1 = (long)size;
-    long x2 = (long)prot;
-    long x3 = (long)flags;
-    long x4 = (long)fd;
-    long x5 = (long)offset;    
-    long x8 = __NR_mmap;
-    long ret = 0;
+	long x0 = (long)addr;
+	long x1 = (long)size;
+	long x2 = (long)prot;
+	long x3 = (long)flags;
+	long x4 = (long)fd;
+	long x5 = (long)offset;    
+	long x8 = __NR_mmap;
+	long ret = 0;
 
-    __asm volatile ("mov x0, %0": : "r"(x0));
-    __asm volatile ("mov x1, %0": : "r"(x1));
-    __asm volatile ("mov x2, %0": : "r"(x2));
-    __asm volatile ("mov x3, %0": : "r"(x3));
-    __asm volatile ("mov x4, %0": : "r"(x4));
-    __asm volatile ("mov x5, %0": : "r"(x5));
-    __asm volatile ("mov x8, %0": : "r"(x8));
-    __asm volatile ("svc 0");
-    __asm volatile ("mov %0, x0" : "=r"(ret));
-    return (void*)ret;
+	__asm volatile ("mov x0, %0": : "r"(x0));
+	__asm volatile ("mov x1, %0": : "r"(x1));
+	__asm volatile ("mov x2, %0": : "r"(x2));
+	__asm volatile ("mov x3, %0": : "r"(x3));
+	__asm volatile ("mov x4, %0": : "r"(x4));
+	__asm volatile ("mov x5, %0": : "r"(x5));
+	__asm volatile ("mov x8, %0": : "r"(x8));
+	__asm volatile ("svc 0");
+	__asm volatile ("mov %0, x0" : "=r"(ret));
+	return (void*)ret;
 }
 
 int MyApi::munmap(void* addr, size_t size)
 {
-    long x0 = (long)addr;
-    long x1 = (long)size;
-    long x8 = __NR_munmap;
-    long ret = 0;
-    __asm volatile ("mov x0, %0": : "r"(x0));
-    __asm volatile ("mov x1, %0": : "r"(x1));
-    __asm volatile ("mov x8, %0": : "r"(x8));
-    __asm volatile ("svc 0");
-    __asm volatile ("mov %0, x0" : "=r"(ret));
-    return (int)ret;
-    
+	long x0 = (long)addr;
+	long x1 = (long)size;
+	long x8 = __NR_munmap;
+	long ret = 0;
+	__asm volatile ("mov x0, %0": : "r"(x0));
+	__asm volatile ("mov x1, %0": : "r"(x1));
+	__asm volatile ("mov x8, %0": : "r"(x8));
+	__asm volatile ("svc 0");
+	__asm volatile ("mov %0, x0" : "=r"(ret));
+	return (int)ret;
+	
 }
 
 int MyApi::mprotect(void* addr, size_t size, int prot)
 {
-    long x0 = (long)addr;
-    long x1 = (long)size;
-    long x2 = (long)prot;
-    long x8 = __NR_mprotect;
-    long ret = 0;
+	long x0 = (long)addr;
+	long x1 = (long)size;
+	long x2 = (long)prot;
+	long x8 = __NR_mprotect;
+	long ret = 0;
 
-    __asm volatile ("mov x0, %0": : "r"(x0));
-    __asm volatile ("mov x1, %0": : "r"(x1));
-    __asm volatile ("mov x2, %0": : "r"(x2));
-    __asm volatile ("mov x8, %0": : "r"(x8));
-    __asm volatile ("svc 0");
-    __asm volatile ("mov %0, x0" : "=r"(ret));
+	__asm volatile ("mov x0, %0": : "r"(x0));
+	__asm volatile ("mov x1, %0": : "r"(x1));
+	__asm volatile ("mov x2, %0": : "r"(x2));
+	__asm volatile ("mov x8, %0": : "r"(x8));
+	__asm volatile ("svc 0");
+	__asm volatile ("mov %0, x0" : "=r"(ret));
 
-    return (int)ret;
+	return (int)ret;
 }
