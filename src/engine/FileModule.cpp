@@ -1,11 +1,15 @@
 ﻿#include "FileModule.h"
 
-
 FileModule::FileModule(string path) : Module(path)
 {
+	executable = false;
 }
 FileModule::~FileModule()
 {
+}
+void FileModule::SetExecutable()
+{
+	executable = true;
 }
 
 bool FileModule::Init()
@@ -24,49 +28,59 @@ bool FileModule::Init()
 bool FileModule::GetSectionAddr()
 {
 	LOG("FileModule::GetSectionAddr()");
-	MyApi m;
-	// for mmap
-	int fd = m.open(path.c_str(), O_RDONLY, 0);
-	if (fd < 0)
+		
+	LOG("!! %s", path.c_str());
+	
+	// elf 파싱을 위해 메모리에 매핑
+	Mmap m(this->path);
+	char* mmap_memory = (char*)m.Alloc();
+	if (MAP_FAILED == mmap_memory)
 	{
 		LOGE("GetSectionAddr() 1");
 		return false;
 	}
-	// 파일의 사이즈를 얻는다. 
-	struct stat finfo = { 0, };
-	m.stat(path.c_str(), &finfo);
+	// malloc으로 해야 파일 경로가 가려짐
+	char* memory = (char*)memalign(0x1000, m.GetAllocSize()); // 계속 메모리에 상주해야 하므로 해제하면 안됨	
+	memcpy(memory, mmap_memory, m.GetAllocSize()); // malloc한 메모리에 복사 후, mmap은 해제됨
+
+	// 실행 파일로 설정한 경우
+	if (executable == true)
+	{		
+		make_rwx(memory, m.GetAllocSize()); // file 모듈을 실행해야 하는 경우, 실제 메모리 모듈 권한과 동일하게 주어야 한다.
+	}
+	else
+	{
+		make_r(memory, m.GetAllocSize()); // 메모리 비교만 하는 경우
+	}
+
 	
-	// elf 파싱을 위해 메모리에 매핑
-	char* memory = (char*)mmap(0, finfo.st_size, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE, fd, 0);
-	if (MAP_FAILED == memory)
+	moduleAddr.startAddr = (intptr_t)memory;
+
+	Elf64_Ehdr* ehdr = (Elf64_Ehdr*)memory;
+	if (!(ehdr->e_ident[0] == 0x7F && ehdr->e_ident[1] == 0x45 && ehdr->e_ident[2] == 0x4C && ehdr->e_ident[3] == 0x46))
 	{
 		LOGE("GetSectionAddr() 2");
 		return false;
 	}
-	moduleAddr.startAddr = (intptr_t)memory;
-	
-	Elf64_Ehdr* ehdr = (Elf64_Ehdr*)memory;
-	if (!(ehdr->e_ident[0] == 0x7F && ehdr->e_ident[1] == 0x45 && ehdr->e_ident[2] == 0x4C && ehdr->e_ident[3] == 0x46))
+
+	Elf64_Shdr* shdr = (Elf64_Shdr*)&memory[(ehdr->e_shstrndx * sizeof(Elf64_Shdr)) + ehdr->e_shoff];
+
+	intptr_t sh_offset = shdr->sh_offset;
+	if (sh_offset == 0)
 	{
 		LOGE("GetSectionAddr() 3");
 		return false;
 	}
-	
-	Elf64_Shdr* shdr = (Elf64_Shdr*)&memory[(ehdr->e_shstrndx * sizeof(Elf64_Shdr)) + ehdr->e_shoff];
 
-
-	intptr_t sh_offset = shdr->sh_offset;
-
-	int x = 0;
-	for (int i = 0; i < ehdr->e_shnum; i++, x += sizeof(Elf64_Shdr))
+	for (int i = 0, x = 0; i < ehdr->e_shnum; i++, x += sizeof(Elf64_Shdr))
 	{
 		shdr = (Elf64_Shdr*)&memory[ehdr->e_shoff + x];
 		char* p = &memory[sh_offset + shdr->sh_name];
 
 		//LOG("%s %llx %llx %llx %llx ", p, moduleAddr.startAddr + shdr->sh_addr, shdr->sh_addr, shdr->sh_offset, shdr->sh_size);
-
+	
 		if (0 == strcmp(p, ".got.plt"))
-		{
+		{			
 			moduleAddr.gotPltSectionStartAddr = moduleAddr.startAddr + shdr->sh_offset;
 			moduleAddr.gotPltSectionEndAddr = moduleAddr.gotPltSectionStartAddr + shdr->sh_size;
 		}
@@ -78,7 +92,7 @@ bool FileModule::GetSectionAddr()
 		if (0 == strcmp(p, ".text"))
 		{
 			moduleAddr.codeSectionStartAddr = moduleAddr.startAddr + shdr->sh_offset;
-			moduleAddr.codeSectionEndAddr = moduleAddr.codeSectionStartAddr + shdr->sh_size;
+			moduleAddr.codeSectionEndAddr = moduleAddr.codeSectionStartAddr + shdr->sh_size;		
 		}
 		if (0 == strcmp(p, ".dynsym"))
 		{
@@ -117,8 +131,7 @@ bool FileModule::GetSectionAddr()
 		{
 			moduleAddr.pltSectionStartAddr = moduleAddr.startAddr + shdr->sh_offset;
 			moduleAddr.pltSectionEndAddr = moduleAddr.pltSectionStartAddr + shdr->sh_size;
-		}
-		
+		}		
 	}
 
 	return true;

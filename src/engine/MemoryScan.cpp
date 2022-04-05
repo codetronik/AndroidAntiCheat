@@ -156,20 +156,9 @@ bool MemoryScan::IsHackFound()
 void MemoryScan::GetProcessMemoryRegions()
 {
 	memRegions.empty();
-	MyApi myApi;
-	int fd = myApi.open("/proc/self/maps", O_RDONLY, 0);
-	if (fd < 0)
-	{
-		LOGE("GetProcessMemoryRegions() 1");
-		return;
-	}
-
-	string buffer = read_string(fd); // 파일 버퍼
-	close(fd);
-
+	
 	string oneLine = "";
-	stringstream ss(buffer);
-
+	stringstream ss(get_self_maps());
 
 	// \n 으로 토큰 구분
 	while (getline(ss, oneLine, '\n'))

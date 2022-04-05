@@ -17,24 +17,37 @@ static size_t get_size(void* p, size_t n)
 	}
 	return size;
 }
+
+
+static int make(void* p, size_t n, int perms)
+{
+	intptr_t start_addr_align = align_down((uintptr_t)p, PAGE_SIZE);
+	size_t size = get_size(p, n);
+	MyApi myApi;
+	return myApi.mprotect((void*)start_addr_align, size, perms);
+}
+
 int make_rwx(void* p, size_t n)
 {
-	intptr_t start_addr_align = align_down((uintptr_t)p, PAGE_SIZE);
-	size_t size = get_size(p, n);
-	MyApi myApi;
-	return myApi.mprotect((void*)start_addr_align, size, PROT_READ | PROT_WRITE | PROT_EXEC);
+	return make(p, n, PROT_READ | PROT_WRITE | PROT_EXEC);
 }
+
 int make_rw(void* p, size_t n)
 {
-	intptr_t start_addr_align = align_down((uintptr_t)p, PAGE_SIZE);
-	size_t size = get_size(p, n);
-	MyApi myApi;
-	return myApi.mprotect((void*)start_addr_align, size, PROT_READ | PROT_WRITE);
+	return make(p, n, PROT_READ | PROT_WRITE);
 }
-string read_string(int fd)
+
+int make_r(void* p, size_t n)
 {
-	string buffer = ""; // 파일 버퍼
+	return make(p, n, PROT_READ);
+}
+
+string get_self_maps()
+{
 	MyApi myApi;
+	int fd = myApi.open("/proc/self/maps", 0/*O_RDONLY*/, 0);
+
+	string buffer = ""; // 파일 버퍼
 
 	while (true)
 	{
@@ -48,9 +61,9 @@ string read_string(int fd)
 		}
 		string temp2(temp);
 		buffer = buffer + temp2;
-
 	}
+	
+	close(fd);	
 
 	return buffer;
 }
-

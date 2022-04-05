@@ -1,21 +1,19 @@
-﻿#include <pthread.h>
-#include <iostream>
+﻿#include <iostream>
 #include <vector>
 #include <sys/stat.h>
 #include <dlfcn.h>
 #include <sys/system_properties.h>
+#include <thread>
 #include "MemModule.h"
 #include "GotIntegrity.h"
 #include "HookTest.h"
 #include "InlineStatus.h"
-//#include "Log.h"
+#include "Log.h"
 #include "MyApi.h"
 #include "MemoryScan.h"
 #include "SectionIntegrity.h"
-#include <thread>
-using namespace std;
 
-//AsyncLog log;
+using namespace std;
 
 string GetSystemLibraryPath()
 {
@@ -153,11 +151,11 @@ private:
 		{
 			if (true == si.IsModified(i))
 			{
-				LOG("[%s] %s is corrupted", i.c_str(), mod_libc->path.c_str());
+				LOG("[%s] %s is corrupted", i.c_str(), mod->path.c_str());
 			}
 			else
 			{
-				LOG("[%s] %s is healthy", i.c_str(), mod_libc->path.c_str());
+				LOG("[%s] %s is healthy", i.c_str(), mod->path.c_str());
 			}
 		}
 	}
@@ -173,7 +171,7 @@ void __attribute__((constructor)) library_init()
 {
 	LOG("================> Android Anti-cheat Engine Start!!");
 
-	/*
+	/* 두가지 방법으로 스레드 사용 가능
 	thread t([] {
 		AsyncLog::instance()->Thread();
 		});

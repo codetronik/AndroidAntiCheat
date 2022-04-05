@@ -1,6 +1,9 @@
 ﻿#pragma once
+#include <sstream>
+#include <cstring>
+#include <dlfcn.h>
+#include <link.h>
 #include "Module.h"
-
 
 class MemModule : public Module
 {

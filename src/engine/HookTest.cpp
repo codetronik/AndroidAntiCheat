@@ -1,5 +1,6 @@
 ﻿#include "HookTest.h"
 #include "InlineHooker.h"
+
 int (*Org_open)(const char* __path, int __flags);
 int hook_open(const char* __path, int __flags)
 {

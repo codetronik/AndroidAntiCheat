@@ -11,9 +11,7 @@ AsyncLog* volatile AsyncLog::instance()
 		if (_instance == nullptr)
 		{
 			_instance = new AsyncLog();
-
 		}
-
 	}
 	return _instance;
 }
@@ -39,9 +37,9 @@ void AsyncLog::Thread()
 
 		if (false == q.empty())
 		{
-			string a = q.front();
+			string logstr = q.front();
 			int type = logType.front();
-			__android_log_print(type, "ANTI", a.c_str());
+			__android_log_print(type, "ANTI", logstr.c_str());
 			q.pop();
 			logType.pop();
 		}

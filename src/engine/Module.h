@@ -12,6 +12,7 @@ using namespace std;
 struct ModuleAddr
 {
 	intptr_t startAddr;
+	intptr_t endAddr;
 	intptr_t codeSectionStartAddr;
 	intptr_t codeSectionEndAddr;
 	intptr_t gotSectionStartAddr;

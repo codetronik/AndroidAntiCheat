@@ -1,5 +1,5 @@
 ﻿#include "InlineStatus.h"
-#include "Log.h"
+
 InlineStatus::InlineStatus(intptr_t addr)
 {		
 	this->addr = addr;

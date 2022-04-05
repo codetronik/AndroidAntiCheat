@@ -1,6 +1,5 @@
 ﻿#include "MemModule.h"
-#include <sstream>
-#include <cstring>
+
 MemModule::MemModule(string path) : Module(path)
 {
 
@@ -35,30 +34,39 @@ bool MemModule::Init()
 void MemModule::GetBaseAddress()
 {
 	LOG("MemModule::GetBaseAddress()");
-	
-	MyApi myApi;
-	int fd = myApi.open("/proc/self/maps", O_RDONLY, 0);
 
-	string buffer = read_string(fd);
-	close(fd);
-	
+	// 해커가 나중에 mmap한 라이브러리인지, 개발자가 dlopen한 라이브러리인지 보장이 안됨 		
 	string oneLine = "";
-	stringstream ss(buffer);
-	LOG("%s", this->path.c_str());
-	
+	stringstream ss(get_self_maps());
+	LOG("%s", path.c_str());
+	bool first = false;
 	// \n 으로 토큰 구분
 	while (getline(ss, oneLine, '\n'))
 	{			
-		size_t n = oneLine.find(this->path);
+		size_t n = oneLine.find(path);
 		if (n != string::npos)
-		{
-			// 발견
-	
-			sscanf(oneLine.c_str(), "%lx-", &this->moduleAddr.startAddr);
-			break;
+		{	
+			intptr_t temp1 = 0;
+			intptr_t temp2 = 0;
+			char perms[5] = { 0, };
+
+			sscanf(oneLine.c_str(), "%lx-%lx %s", &temp1, &temp2, perms);
+			LOG("%s", oneLine.c_str());
+
+			if (first == false)
+			{
+				moduleAddr.startAddr = temp1;
+				first = true;
+			}
+			
+			if (first)
+			{
+				moduleAddr.endAddr = temp2;
+			}
+				
 		}	
 	}
-	
+	LOG("start %lx end %lx", moduleAddr.startAddr, moduleAddr.endAddr);
 	
 }
 
@@ -95,7 +103,7 @@ bool MemModule::GetSectionAddr()
 	{
 	
 		shdr = (Elf64_Shdr*)&memory[ehdr->e_shoff + x];
-		LOG("type %d flags %d info %d", shdr->sh_type, shdr->sh_flags, shdr->sh_info);
+		//LOG("type %d flags %d info %d", shdr->sh_type, shdr->sh_flags, shdr->sh_info);
 		char* p = &memory[sh_offset + shdr->sh_name];
 
 		if (0 == strcmp(p, ".got.plt"))

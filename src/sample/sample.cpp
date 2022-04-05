@@ -10,11 +10,20 @@
 extern "C"
 {
 	void test();
+	int a();
+}
+
+int a()
+{
+	LOG("123");
+	return 55;	
 }
 
 void test()
 {
+
 	int fd = open("/bin/su", O_RDONLY, 0);
+	
 	if (fd > -1)
 	{
 		LOG("(open) /bin/su exist");

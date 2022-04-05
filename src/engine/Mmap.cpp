@@ -7,6 +7,7 @@ Mmap::Mmap(string path)
 	this->path = path;
 	this->fd = -1;
 	this->size = 0;
+	this->allocSize = 0;
 }
 
 Mmap::~Mmap()
@@ -24,6 +25,11 @@ void* Mmap::Alloc()
 			return nullptr;
 		}
 		DoMmap();
+		ChangeAllocPermission();
+		if (0 == allocSize)
+		{
+			return nullptr;
+		}
 	}
 	doAlloc = true;
 	return memory;
@@ -32,7 +38,7 @@ void* Mmap::Alloc()
 bool Mmap::FileOpen()
 {
 	MyApi myApi;
-	int fd = myApi.open(this->path.c_str(), O_RDONLY, 0);
+	int fd = myApi.open(path.c_str(), O_RDONLY, 0);
 
 	if (fd < 0)
 	{
@@ -43,7 +49,7 @@ bool Mmap::FileOpen()
 	this->fd = fd;
 	// 파일의 사이즈를 얻는다. 
 	struct stat finfo = { 0, };
-	int ret = myApi.stat(this->path.c_str(), &finfo);
+	int ret = myApi.stat(path.c_str(), &finfo);
 
 	if (ret == -1)
 	{
@@ -56,12 +62,46 @@ bool Mmap::FileOpen()
 	return true;
 
 }
+size_t Mmap::GetAllocSize()
+{
+	return allocSize;
+}
 
+void Mmap::ChangeAllocPermission()
+{
+	string oneLine = "";
+	stringstream ss(get_self_maps());
+
+	// \n 으로 토큰 구분
+	while (getline(ss, oneLine, '\n'))
+	{
+		size_t n = oneLine.find(path);
+		if (n != string::npos)
+		{
+			intptr_t temp1 = 0;
+			intptr_t temp2 = 0;
+			char perms[5] = { 0, };
+
+			sscanf(oneLine.c_str(), "%lx-%lx %s", &temp1, &temp2, perms);
+			
+			if (0 == strcmp(perms, "---p"))
+			{
+				//LOG("=> %s", oneLine.c_str());
+				make_rw((void*)temp1, temp2 - temp1);
+				allocSize = temp2 - temp1;
+				return;
+			}
+		}
+	}
+	LOGE("ChangeRegionPermission");
+	
+}
 
 void Mmap::DoMmap()
 {	
 	MyApi myApi;
-	memory = myApi.mmap(0, size, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE, fd, 0);	
+	// maps에서 찾기 쉽게 하기 위해 일부러 권한을 아무것도 안줌
+	memory = myApi.mmap(0, size, 0, MAP_PRIVATE, fd, 0);		
 }
 
 void Mmap::DoMunmap()

@@ -34,6 +34,7 @@ bool SectionIntegrity::Init()
 		LOGE("SectionIntegrity::Init() 3");
 		return false;
 	}
+
 	return true;
 }
 bool SectionIntegrity::IsModified(string section)
@@ -84,13 +85,15 @@ bool SectionIntegrity::CheckSectionIntegrity(string section)
 	{
 
 	}
+
 	compareSize = compareEndAddr - compareStartAddr;
 	targetSize = targetEndAddr - targetStartAddr;
 	if (targetSize != compareSize)
 	{
-		LOGE("CheckSectionIntegrity 1");
+		LOGE("CheckSectionIntegrity 1 %x %x", compareSize, targetSize);
 		return false;
 	}
+
 	unsigned char* target = (unsigned char*)targetStartAddr;
 	unsigned char* compare = (unsigned char*)compareStartAddr;
 	for (int i = 0; i < targetSize; i++)

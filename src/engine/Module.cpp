@@ -36,7 +36,7 @@ optional<ModuleAddr> Module::GetModuleAddr()
 	LOG("Module::GetModuleAddr()");
 	if (initDone == false)
 	{
-		LOGE("failed");
+		LOGE("Module::GetModuleAddr() 1");
 		return nullopt;
 	}
 	return moduleAddr;
