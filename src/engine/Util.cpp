@@ -1,30 +1,16 @@
 ﻿#include "Util.h"
 
-#define page_align(n)            align_up((uintptr_t)n, PAGE_SIZE)
-#define align_up(x, n)           (((x) + ((n) - 1)) & ~((n) - 1))
-#define align_down(x, n)         ((x) & -(n))
-
-static size_t get_size(void* p, size_t n)
-{  
-	size_t size = 0;
-	if (page_align((uintptr_t)p + n) != page_align((uintptr_t)p))
-	{
-		size = page_align(n) + PAGE_SIZE;
-	}
-	else
-	{
-		size = page_align(n);
-	}
-	return size;
-}
-
+#define PAGE_ALIGN(x, n)           (((x) + ((n) - 1)) & ~((n) - 1))
 
 static int make(void* p, size_t n, int perms)
 {
-	intptr_t start_addr_align = align_down((uintptr_t)p, PAGE_SIZE);
-	size_t size = get_size(p, n);
+	intptr_t start_addr_align = (intptr_t)p & PAGE_MASK;
+	intptr_t end_addr_align = PAGE_ALIGN((intptr_t)p + n, PAGE_SIZE);
+
+	int page_size = end_addr_align - start_addr_align;
+
 	MyApi myApi;
-	return myApi.mprotect((void*)start_addr_align, size, perms);
+	return myApi.mprotect((void*)start_addr_align, page_size, perms);
 }
 
 int make_rwx(void* p, size_t n)
