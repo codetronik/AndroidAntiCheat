@@ -27,5 +27,5 @@ Scanning tools
 
 ## Test Environment
 AARCH64 (ARM64)
-- Galaxy Tab S6 (Android 11)
+- Galaxy Tab S6 Lite (Android 11)
 - Galaxy Note 8 (Android 9)
