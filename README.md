@@ -24,7 +24,6 @@ Scanning tools
 
 Root Detection
  - Magisk with hide modules [todo]
- - Frida
 
 ## Output
 - dynamic library (libace.so / libsample.so)
