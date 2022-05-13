@@ -22,8 +22,9 @@ Anti Reversing
 Scanning tools 
  - Scanning the binary pattern via the process memory
 
-Root Detection
- - Magisk with hide modules [todo]
+Root Detection [todo]
+ - Search for files related to magisk
+ - Detect magisk-specific signatures
 
 ## Output
 - dynamic library (libace.so / libsample.so)
