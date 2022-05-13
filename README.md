@@ -25,8 +25,6 @@ Scanning tools
 Root Detection [todo]
  - Search for files related to magisk
  - Detect magisk-specific signatures
-   - process memory
-   - /proc/self/mounts 
 
 ## Output
 - dynamic library (libace.so / libsample.so)
