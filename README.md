@@ -25,6 +25,7 @@ Scanning tools
 Root Detection [todo]
  - Search for files related to magisk
  - Detect magisk-specific signatures
+ - Detect adb root privileges
 
 ## Output
 - dynamic library (libace.so / libsample.so)
